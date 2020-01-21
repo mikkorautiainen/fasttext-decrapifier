@@ -1,0 +1,4 @@
+*.bin
+*.vec
+/fasttext
+/venv/*
