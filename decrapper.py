@@ -81,6 +81,7 @@ elif ACTION == 'spell_checker':
 elif ACTION == 'remove':
     import ft_remove_garbage
     ft_remove_garbage.remove_garbage_from_vecfile(VEC_FILE, OUT_FILE)
+    ft_remove_garbage.add_header_to_vecfile(OUT_FILE)
     sys.exit(0)
 
 else:

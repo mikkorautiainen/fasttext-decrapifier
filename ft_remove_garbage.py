@@ -19,6 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import subprocess
 import sys
 import re
 
@@ -49,11 +50,15 @@ def remove_garbage_from_vecfile(vecfile, new_vecfile):
     outfile = open(new_vecfile, 'w')
 
     with open(vecfile) as infile:
+        print('Removing', end='')
         regex = r'^([^ ]+) '
         for line in infile:
             m = re.match(regex, line)  # get the first word
             if m is not None:
                 word = m.group(1)
+                if "'" in word:
+                    print(f' {word}', end='')
+                    continue
                 cur = db.find_word(word)  # search garbwords table
                 # print(f'word={word} {cur.rowcount}')
                 if int(cur.rowcount) <= 0:
@@ -61,15 +66,43 @@ def remove_garbage_from_vecfile(vecfile, new_vecfile):
                     # print(f'Adding {word} as it is not in garbage DB')
                     outfile.write(line)
                 else:
-                    print(f'Removing {word} as it is in garbage DB')
+                    print(f' {word}', end='')
+        print('\n')
     outfile.close()
+
+
+def add_header_to_vecfile(vecfile):
+    # get column and row count
+    rows = 0
+    with open(vecfile) as outfile:
+        line = outfile.readline()
+        columns = line.count(' ')
+        outfile.seek(0)
+        buf = outfile.read(1024 * 1024)
+        while buf:
+            rows += buf.count('\n')
+            buf = outfile.read(1024 * 1024)
+
+    # add header row
+    header = f'{rows} {columns}'
+    print(f'Adding header "{header}"')
+    sed_command = f"1 i\{header}"
+    result = subprocess.call(["sed", "-i", sed_command, vecfile])
+    if result == 0:
+        print('Header added successfully')
+        return True
+    else:
+        print('\nError: Failed to add header\n')
+        return False
 
 
 if __name__ == "__main__":
     # execute only if run as a script
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--vec', required=False, default='./cc.fi.300.vec')
+    parser.add_argument('--vec',
+                        required=False,
+                        default='./cc.fi.300.vec')
     parser.add_argument('--output',
                         required=False,
                         default='./cc.fi.300.filtered.vec')
@@ -79,3 +112,4 @@ if __name__ == "__main__":
     OUT_FILE = args.output  # default './cc.fi.300.filtered.vec'
 
     remove_garbage_from_vecfile(VEC_FILE, OUT_FILE)
+    add_header_to_vecfile(OUT_FILE)
