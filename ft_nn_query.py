@@ -79,7 +79,7 @@ def write_garbage_to_database(model, db, garbage_words):
                     if ft_regex.simple_regex_check(tp[0]):
                         db.words_insert_garbword(tp[0], 0)
         except KeyError as err:
-            db.words_insert_word(word, simple_regex_check(word))
+            db.words_insert_garbword(word, 2)
             print(f'\tError {err}')
         db.commit()
 
