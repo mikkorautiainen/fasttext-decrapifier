@@ -1,4 +1,5 @@
 *.bin
 *.vec
+*.vocab
 /fasttext
 /venv/*

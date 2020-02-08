@@ -15,6 +15,7 @@ fastText Decrapifier
   - [Nearest neighbor iteration](#nearest-neighbor-iteration)
   - [Spell checker](#spell-checker)
   - [Create vec-file](#create-vec-file)
+  - [Create vocabulary](#create-vocabulary)
 - [License](#license)
 
 <!-- /TOC -->
@@ -100,6 +101,12 @@ Checks every word in the vec-file against the database.\
 This sub-command creates a new vec-file with the non-language words excluded.
 ```
 python decrapper.py --action remove
+```
+## Create vocabulary
+(Optional step) Replaces the word-vectors with the word’s lexical category and plurality.\
+This sub-command creates a new tab-delimited text file with the vocabulary and lexical information.
+```
+python decrapper.py --action vocabulary
 ```
 
 &nbsp;

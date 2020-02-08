@@ -33,7 +33,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--action',
                     required=True,
                     help="Action to perform: 'init', 'regex', "
-                         "'nn_query', 'spell_checker', 'remove'")
+                         "'nn_query', 'spell_checker', 'remove', "
+                         "'vocabulary'")
 parser.add_argument('--bin',
                     required=False,
                     default='./cc.fi.300.bin',
@@ -46,6 +47,10 @@ parser.add_argument('--output',
                     required=False,
                     default='./cc.fi.300.filtered.vec',
                     help="Decrapped vectors in plain-text format")
+parser.add_argument('--vocab',
+                    required=False,
+                    default='./cc.fi.300.filtered.vocab',
+                    help="Decrapped vocabulary")
 args = parser.parse_args()
 
 
@@ -54,6 +59,7 @@ ACTION = args.action.lower()
 BIN_FILE = args.bin     # default './cc.fi.300.bin'
 VEC_FILE = args.vec     # default './cc.fi.300.vec'
 OUT_FILE = args.output  # default './cc.fi.300.filtered.vec'
+VOCAB_FILE = args.vocab # default './cc.fi.300.filtered.vocab'
 
 
 # actions
@@ -82,6 +88,11 @@ elif ACTION == 'remove':
     import ft_remove_garbage
     ft_remove_garbage.remove_garbage_from_vecfile(VEC_FILE, OUT_FILE)
     ft_remove_garbage.add_header_to_vecfile(OUT_FILE)
+    sys.exit(0)
+
+elif ACTION == 'vocabulary':
+    import ft_vocab
+    ft_vocab.create_vocab_file(OUT_FILE, VOCAB_FILE)
     sys.exit(0)
 
 else:
