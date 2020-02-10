@@ -56,7 +56,7 @@ def remove_garbage_from_vecfile(vecfile, new_vecfile):
             m = re.match(regex, line)  # get the first word
             if m is not None:
                 word = m.group(1)
-                if "'" in word:
+                if "'" in word or '\\' in word:
                     print(f' {word}', end='')
                     continue
                 cur = db.find_word(word)  # search garbwords table

@@ -32,8 +32,12 @@ assert sys.version_info >= (3, 6)
 def simple_regex_check(word):
     """ C, Q, W, X or Z excluded """
     regex = r'^([abd-pr-vyABD-PR-VYÅåÄäÖöŠšŽž\-\']+$)'
-    rr = re.match(regex, word)
-    return int(rr is not None)
+    if re.match(regex, word) is None:
+        return False
+    """ exclude words beginning with dash and containing consecutive dashes """
+    if re.search(r'^-|--', word):
+        return False
+    return True
 
 
 def regex_vecfile(vecfile):
