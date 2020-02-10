@@ -56,10 +56,10 @@ args = parser.parse_args()
 
 # constants
 ACTION = args.action.lower()
-BIN_FILE = args.bin     # default './cc.fi.300.bin'
-VEC_FILE = args.vec     # default './cc.fi.300.vec'
-OUT_FILE = args.output  # default './cc.fi.300.filtered.vec'
-VOCAB_FILE = args.vocab # default './cc.fi.300.filtered.vocab'
+BIN_FILE = args.bin      # default './cc.fi.300.bin'
+VEC_FILE = args.vec      # default './cc.fi.300.vec'
+OUT_FILE = args.output   # default './cc.fi.300.filtered.vec'
+VOCAB_FILE = args.vocab  # default './cc.fi.300.filtered.vocab'
 
 
 # actions

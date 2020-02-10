@@ -60,7 +60,6 @@ def remove_garbage_from_vecfile(vecfile, new_vecfile):
                     print(f' {word}', end='')
                     continue
                 cur = db.find_word(word)  # search garbwords table
-                # print(f'word={word} {cur.rowcount}')
                 if int(cur.rowcount) <= 0:
                     # Not in the garbage words
                     # print(f'Adding {word} as it is not in garbage DB')

@@ -104,7 +104,7 @@ python decrapper.py --action remove
 ```
 ## Create vocabulary
 (Optional step) Replaces the word-vectors with the word’s lexical category and plurality.\
-This sub-command creates a new tab-delimited text file with the vocabulary and lexical information.
+This sub-command creates a new tab-delimited text file with the uncased vocabulary and lexical information.
 ```
 python decrapper.py --action vocabulary
 ```

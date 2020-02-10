@@ -3,3 +3,4 @@
 *.vocab
 /fasttext
 /venv/*
+/__pycache__
