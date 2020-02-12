@@ -18,13 +18,12 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-
-import datetime
 import sys
+import datetime
 import random
-import fasttext
+import fasttext 
 
-from ft_dbconnect import MysqlDB
+from   ft_dbconnect import MysqlDB
 import ft_forward_model
 import ft_regex
 
@@ -37,7 +36,7 @@ assert sys.version_info >= (3, 6)
 MIN_LENGTH = 4
 MAX_LENGTH = 20
 LOOP_CUTOFF = 100
-NUM_GARBAGE_WORDS = 1000
+NUM_GARBAGE_WORDS = 100
 FINNISH_CONSONANTS = 'bdfghjklmnprstv'  # finnish consonants
 
 
@@ -84,13 +83,13 @@ def write_garbage_to_database(model, db, garbage_words):
         db.commit()
 
 
-def run_nn_random(BIN_FILE):
-    db = MysqlDB()
+def run_nn_random(config, BIN_FILE):
+    db = MysqlDB(config)
 
     # load model
     print(datetime.datetime.now().time())
     print('\tLoading model ...')
-    model = ft_forward_model.NNLookup(BIN_FILE)  # NNLookup
+    model = ft_forward_model.NNLookup(config['FASTTEXT_PATH'], BIN_FILE)  # NNLookup
 #    print(datetime.datetime.now().time())
 
     # loop until only LOOP_CUTOFF new words per NUM_GARBAGE_WORDS iterations

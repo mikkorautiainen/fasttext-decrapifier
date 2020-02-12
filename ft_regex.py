@@ -40,7 +40,7 @@ def simple_regex_check(word):
     return True
 
 
-def regex_vecfile(vecfile):
+def regex_vecfile(config, vecfile):
     """
     Runs the regex on the vec file entries and add the word if the word
     did not match the regex=garbage word.
@@ -48,7 +48,7 @@ def regex_vecfile(vecfile):
     Check if the word in line has a matching entry in garbwords table.
     Insert the word if not in the table.
     """
-    db = MysqlDB()
+    db = MysqlDB(config)
     with open(vecfile) as infile:
         for line in infile:
             text_regex = r'^([^ ]+) '

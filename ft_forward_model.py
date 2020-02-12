@@ -23,7 +23,7 @@ import fasttext
 import pexpect
 
 
-FASTTEXT_PATH = './fasttext'
+
 NUM_NEIGHBORS = 10
 
 
@@ -35,9 +35,9 @@ class NNLookup:
     fasttext nn to lookup neighbours. It's rather fiddly
     and depends on exact text strings. But it is at least
     short and simple."""
-    def __init__(self, model_path):
+    def __init__(self, fasttext_path, model_path):
         self.nn_process = pexpect.spawn(
-            f'{FASTTEXT_PATH} nn {model_path} {NUM_NEIGHBORS}'
+            f'{fasttext_path} nn {model_path} {NUM_NEIGHBORS}'
             )
         self.nn_process.expect('Query word?',
                                timeout=180)  # Flush the first prompt out.

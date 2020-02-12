@@ -42,6 +42,8 @@ def load_config(filepath):
         # print(config)
     return config
 
+config = load_config(DEFAULT_CONFIG_FILE_PATH)
+
 
 # parse arguments
 parser = argparse.ArgumentParser()
@@ -52,19 +54,19 @@ parser.add_argument('--action',
                          "'vocabulary'")
 parser.add_argument('--bin',
                     required=False,
-                    default='./cc.fi.300.bin',
+                    default=config['BIN_FILE'],
                     help="Fasttext model in binary format")
 parser.add_argument('--vec',
                     required=False,
-                    default='./cc.fi.300.vec',
+                    default=config['VEC_FILE'],
                     help="Fasttext vectors in plain-text format")
 parser.add_argument('--output',
                     required=False,
-                    default='./cc.fi.300.filtered.vec',
+                    default=config['OUT_FILE'],
                     help="Decrapped vectors in plain-text format")
 parser.add_argument('--vocab',
                     required=False,
-                    default='./cc.fi.300.filtered.vocab',
+                    default=config['VOCAB_FILE'],
                     help="Decrapped vocabulary")
 args = parser.parse_args()
 
@@ -78,7 +80,7 @@ VOCAB_FILE = args.vocab  # default './cc.fi.300.filtered.vocab'
 
 
 # actions
-config = load_config(DEFAULT_CONFIG_FILE_PATH)
+
 
 if ACTION == 'init':
     from ft_dbconnect import MysqlDB
@@ -89,22 +91,22 @@ if ACTION == 'init':
 
 elif ACTION == 'regex':
     import ft_regex
-    ft_regex.regex_vecfile(VEC_FILE)
+    ft_regex.regex_vecfile(config, VEC_FILE)
     sys.exit(0)
 
 elif ACTION == 'nn_query':
     import ft_nn_query
-    ft_nn_query.run_nn_random(BIN_FILE)
+    ft_nn_query.run_nn_random(config, BIN_FILE)
     sys.exit(0)
 
 elif ACTION == 'spell_checker':
     import ft_spell_checker
-    ft_spell_checker.run_spell_checker()
+    ft_spell_checker.run_spell_checker(config)
     sys.exit(0)
 
 elif ACTION == 'remove':
     import ft_remove_garbage
-    ft_remove_garbage.remove_garbage_from_vecfile(VEC_FILE, OUT_FILE)
+    ft_remove_garbage.remove_garbage_from_vecfile(config, VEC_FILE, OUT_FILE)
     ft_remove_garbage.add_header_to_vecfile(OUT_FILE)
     sys.exit(0)
 

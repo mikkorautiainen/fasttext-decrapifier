@@ -1,5 +1,10 @@
 {
   "LANGUAGE": "finnish",
+  "FASTTEXT_PATH": "/Volumes/seagate1/GBC/fasttext",
+  "BIN_FILE": "/Volumes/seagate1/GBC/finnish/cc.fi.300.bin",
+  "VEC_FILE": "/Volumes/seagate1/GBC/finnish/cc.fi.300.vec",
+  "OUT_FILE": "/Volumes/seagate1/GBC/finnish/cc.fi.300.filtered.vec",
+  "VOCAB_FILE": "/Volumes/seagate1/GBC/finnish/cc.fi.300.filtered.vocab",
   "DATABASE": {
     "dbname":  "decrapper",
     "table": "garbwords",

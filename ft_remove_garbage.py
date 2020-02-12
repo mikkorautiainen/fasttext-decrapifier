@@ -30,7 +30,7 @@ from ft_dbconnect import MysqlDB
 assert sys.version_info >= (3, 6)
 
 
-def remove_garbage_from_vecfile(vecfile, new_vecfile):
+def remove_garbage_from_vecfile(config, vecfile, new_vecfile):
     """
     file = open vecfile
     ok-words-file = open file for writing
@@ -45,7 +45,7 @@ def remove_garbage_from_vecfile(vecfile, new_vecfile):
           pass  # ignore
     end
     """
-    db = MysqlDB()
+    db = MysqlDB(config)
 
     outfile = open(new_vecfile, 'w')
 
