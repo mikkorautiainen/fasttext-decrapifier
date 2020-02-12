@@ -23,38 +23,34 @@ import mysql.connector
 import re
 
 
-DB = {
-    'DB': 'decrapper',
-    'TABLE': 'garbwords',
-    'USER': 'root',
-    'PASSWORD': '',
-    'HOST': 'localhost',
-    'PORT': '3306'
-}
-DATABASE = DB
 
 
 class MysqlDB:
-    db = None
+    db=None       # connector
+    database=None # config
 
-    def __init__(self):
+    def __init__(self, config):
         """ connect to the database """
-        self.db = {}
+
         try:
-            self.db = mysql.connector.connect(user=DATABASE['USER'],
-                                              password=DATABASE['PASSWORD'],
-                                              host=DATABASE['HOST'],
-                                              port=DATABASE['PORT'],
-                                              database=DATABASE['DB'],
+            if self.database is None:
+                self.database = config['DATABASE']
+                self.db =None
+
+            self.db = mysql.connector.connect(user=self.database['user'],
+                                              password=self.database['password'],
+                                              host=self.database['host'],
+                                              port=self.database['port'],
+                                              database=self.database['dbname'],
                                               use_pure=True)
             # self.connect()  # sets cls.db
             MysqlDB.db = self.db
         except:
-            print("Failed to connect to database {}".format(DATABASE['DB']))
-            self.db = mysql.connector.connect(user=DATABASE['USER'],
-                                              password=DATABASE['PASSWORD'],
-                                              host=DATABASE['HOST'],
-                                              port=DATABASE['PORT'],
+            print("Failed to connect to database {}".format(self.database['dbname']))
+            self.db = mysql.connector.connect(user=self.database['user'],
+                                              password=self.database['password'],
+                                              host=self.database['host'],
+                                              port=self.database['port'],
                                               use_pure=True)
             # self.connect()  # sets cls.db
             MysqlDB.db = self.db
@@ -79,21 +75,20 @@ class MysqlDB:
 
     def initialize_database(self):
         """ initialize mysql database from ground 0 """
-        query = f"DROP DATABASE IF EXISTS {DATABASE['DB']}"
+        query = f"DROP DATABASE IF EXISTS {self.database['dbname']}"
         self.execute(query, ())
 
-        print(f"Creating database {DATABASE['DB']}")
-        query = f"CREATE DATABASE {DATABASE['DB']}"
+        print(f"Creating database {self.database['dbname']}")
+        query = f"CREATE DATABASE {self.database['dbname']}"
         self.execute(query, ())
 
         # reinitialize database connection
-        MysqlDB.__init__(self)
+        MysqlDB.__init__(self, None)
 
-        query = f'CREATE TABLE `{DATABASE["TABLE"]}` ( ' \
+        query = f'CREATE TABLE `{self.database["table"]}` ( ' \
                  '    `word` text NOT NULL, ' \
                  '    `count` int(11) NOT NULL DEFAULT 0, ' \
                  '    `regexflag` tinyint(4) NOT NULL, ' \
-                 '    `input` text DEFAULT \'\', ' \
                  '    `value` float DEFAULT 0, ' \
                  '    PRIMARY KEY (`word`(255)) ' \
                  ' ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 '

@@ -22,10 +22,25 @@
 
 import argparse
 import sys
+import json
+from pathlib import Path
 
 
 # check python version >= 3.6
 assert sys.version_info >= (3, 6)
+
+
+DEFAULT_CONFIG_FILE_PATH='./config.json'
+
+
+def load_config(filepath):
+    config = {}
+    config_file = Path(filepath)
+    if config_file.exists():
+        with open(filepath) as f:
+            config = json.load(f)
+        # print(config)
+    return config
 
 
 # parse arguments
@@ -63,9 +78,12 @@ VOCAB_FILE = args.vocab  # default './cc.fi.300.filtered.vocab'
 
 
 # actions
+config = load_config(DEFAULT_CONFIG_FILE_PATH)
+
 if ACTION == 'init':
     from ft_dbconnect import MysqlDB
-    db = MysqlDB()
+    db = MysqlDB(config)
+
     db.initialize_database()
     sys.exit(0)
 
