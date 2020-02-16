@@ -60,13 +60,6 @@ parser.add_argument('--vocab',
 args = parser.parse_args()
 
 
-# constants
-BIN_FILE = args.bin      # default './cc.fi.300.bin'
-VEC_FILE = args.vec      # default './cc.fi.300.vec'
-OUT_FILE = args.output   # default './cc.fi.300.filtered.vec'
-VOCAB_FILE = args.vocab  # default './cc.fi.300.filtered.vocab'
-
-
 # actions
 ACTION = args.action.lower()
 if ACTION == 'init':
@@ -78,12 +71,12 @@ if ACTION == 'init':
 
 elif ACTION == 'regex':
     import ft_regex
-    ft_regex.regex_vecfile(config, VEC_FILE)
+    ft_regex.regex_vecfile(config, args.vec)
     sys.exit(0)
 
 elif ACTION == 'nn_query':
     import ft_nn_query
-    ft_nn_query.run_nn_random(config, BIN_FILE)
+    ft_nn_query.run_nn_random(config, args.bin)
     sys.exit(0)
 
 elif ACTION == 'spell_checker':
@@ -93,13 +86,13 @@ elif ACTION == 'spell_checker':
 
 elif ACTION == 'remove':
     import ft_remove_garbage
-    ft_remove_garbage.remove_garbage_from_vecfile(config, VEC_FILE, OUT_FILE)
-    ft_remove_garbage.add_header_to_vecfile(OUT_FILE)
+    ft_remove_garbage.remove_garbage_from_vecfile(config, args.vec, args.output)
+    ft_remove_garbage.add_header_to_vecfile(args.output)
     sys.exit(0)
 
 elif ACTION == 'vocabulary':
     import ft_vocab
-    ft_vocab.create_vocab_file(OUT_FILE, VOCAB_FILE)
+    ft_vocab.create_vocab_file(args.output, args.vocab)
     sys.exit(0)
 
 else:
