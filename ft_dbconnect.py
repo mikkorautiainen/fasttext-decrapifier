@@ -23,11 +23,9 @@ import mysql.connector
 import re
 
 
-
-
 class MysqlDB:
-    db=None       # connector
-    database=None # config
+    db = None        # connector
+    database = None  # config
 
     def __init__(self, config):
         """ connect to the database """
@@ -35,7 +33,7 @@ class MysqlDB:
         try:
             if self.database is None:
                 self.database = config['DATABASE']
-                self.db =None
+                self.db = None
 
             self.db = mysql.connector.connect(user=self.database['user'],
                                               password=self.database['password'],

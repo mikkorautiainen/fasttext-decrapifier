@@ -29,13 +29,12 @@ from ft_dbconnect import MysqlDB
 assert sys.version_info >= (3, 6)
 
 
-def simple_regex_check(word):
-    """ C, Q, W, X or Z excluded """
-    regex = r'^([abd-pr-vyABD-PR-VYÅåÄäÖöŠšŽž\-\']+$)'
-    if re.match(regex, word) is None:
+def simple_regex_check(config, word):
+    """ Fail if word doesn't match REGEX_POSITIVE """
+    if re.match(config['REGEX_POSITIVE'], word) is None:
         return False
-    """ exclude words beginning with dash and containing consecutive dashes """
-    if re.search(r'^-|--', word):
+    """ Fail if word matchs REGEX_NEGATIVE """
+    if re.search(config['REGEX_NEGATIVE'], word):
         return False
     return True
 
@@ -55,7 +54,7 @@ def regex_vecfile(config, vecfile):
             m = re.match(text_regex, line)  # get the first word
             if m is not None:
                 word = m.group(1)
-                if not simple_regex_check(word):
+                if not simple_regex_check(config, word):
                     result = db.words_insert_garbword(word, 1)
                     if hasattr(result, 'lastrowid'):
                         print(f'Added {word} because it failed the regex')
@@ -67,9 +66,7 @@ def regex_vecfile(config, vecfile):
 
 if __name__ == "__main__":
     # execute only if run as a script
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--vec', required=False, default='./cc.fi.300.vec')
-    args = parser.parse_args()
+    from ft_config import load_config
+    config = load_config()
 
-    regex_vecfile(args.vec)
+    regex_vecfile(config, config['VEC_FILE'])

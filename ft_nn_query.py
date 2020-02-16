@@ -21,7 +21,7 @@
 import sys
 import datetime
 import random
-import fasttext 
+import fasttext
 
 from   ft_dbconnect import MysqlDB
 import ft_forward_model
@@ -66,7 +66,7 @@ venäläisvastainen 0.605122]
 """
 
 
-def write_garbage_to_database(model, db, garbage_words):
+def write_garbage_to_database(config, model, db, garbage_words):
     """
     Writes the garbage words iff the word value is over .5
     """
@@ -75,7 +75,7 @@ def write_garbage_to_database(model, db, garbage_words):
             result = model.get_nn_tpl(word)
             for tp in result:
                 if .5 < float(tp[1]):
-                    if ft_regex.simple_regex_check(tp[0]):
+                    if ft_regex.simple_regex_check(config, tp[0]):
                         db.words_insert_garbword(tp[0], 0)
         except KeyError as err:
             db.words_insert_garbword(word, 2)
@@ -89,7 +89,7 @@ def run_nn_random(config, BIN_FILE):
     # load model
     print(datetime.datetime.now().time())
     print('\tLoading model ...')
-    model = ft_forward_model.NNLookup(config['FASTTEXT_PATH'], BIN_FILE)  # NNLookup
+    model = ft_forward_model.NNLookup(config['FASTTEXT_PATH'], BIN_FILE)
 #    print(datetime.datetime.now().time())
 
     # loop until only LOOP_CUTOFF new words per NUM_GARBAGE_WORDS iterations
@@ -115,12 +115,15 @@ def run_nn_random(config, BIN_FILE):
                                          MIN_LENGTH,
                                          MAX_LENGTH,
                                          NUM_GARBAGE_WORDS)
-        write_garbage_to_database(model, db, garbage_words)
+        write_garbage_to_database(config, model, db, garbage_words)
 
     print('Completed')
     print(datetime.datetime.now().time())
 
 
 if __name__ == "__main__":
-    BIN_FILE = './cc.fi.300.bin'
-    run_nn_random(BIN_FILE)
+    # execute only if run as a script
+    from ft_config import load_config
+    config = load_config()
+
+    run_nn_random(config, config['BIN_FILE'])
