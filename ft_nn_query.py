@@ -32,24 +32,17 @@ import ft_regex
 assert sys.version_info >= (3, 6)
 
 
-# constants
-MIN_LENGTH = 4
-MAX_LENGTH = 20
-LOOP_CUTOFF = 100
-NUM_GARBAGE_WORDS = 100
-FINNISH_CONSONANTS = 'bdfghjklmnprstv'  # finnish consonants
-
-
 def get_random_words(chars, start, stop, n):
     """
     Returns a list of random words using the arg chars
     in the length from start to stop and count n.
     """
     results = []
-    for i in range(n):
-        len = random.randrange(start, stop)
+    for i in range(int(n)):
+        len = random.randrange(int(start), int(stop))
         results.append(''.join(random.choice(chars) for _ in range(len)))
     return results
+
 
 """
 model.get_nn_tpl(word) ret value is e.g.
@@ -64,11 +57,9 @@ vastaista 0.623824
 luonnonvastainen 0.616921
 venäläisvastainen 0.605122]
 """
-
-
 def write_garbage_to_database(config, model, db, garbage_words):
     """
-    Writes the garbage words iff the word value is over .5
+    Writes the garbage words if the word value is over .5
     """
     for word in garbage_words:
         try:
@@ -83,16 +74,15 @@ def write_garbage_to_database(config, model, db, garbage_words):
         db.commit()
 
 
-def run_nn_random(config, BIN_FILE):
+def run_nn_random(config, bin_file):
     db = MysqlDB(config)
 
     # load model
     print(datetime.datetime.now().time())
     print('\tLoading model ...')
-    model = ft_forward_model.NNLookup(config['FASTTEXT_PATH'], BIN_FILE)
-#    print(datetime.datetime.now().time())
+    model = ft_forward_model.NNLookup(config['FASTTEXT_PATH'], bin_file)
 
-    # loop until only LOOP_CUTOFF new words per NUM_GARBAGE_WORDS iterations
+    # loop until only NN_LOOP_CUTOFF new words per NN_LOOP_WORDS iterations
     print('Starting nn_query loop')
     garbage_count_old = False
     while True:
@@ -104,17 +94,17 @@ def run_nn_random(config, BIN_FILE):
         else:
             garbage_count_difference = garbage_count_new - garbage_count_old
             print(f'\tFound {garbage_count_difference} new nn_query words'
-                  f' in {NUM_GARBAGE_WORDS} iterations')
-            # check LOOP_CUTOFF
-            if garbage_count_difference < LOOP_CUTOFF:
-                print(f'\tNew nn_query word count {garbage_count_difference} '
-                      f' under LOOP_CUTOFF {LOOP_CUTOFF}')
+                  ' in {} iterations'.format(config['NN_LOOP_WORDS']))
+            # check NN_LOOP_CUTOFF
+            if garbage_count_difference < int(config['NN_LOOP_CUTOFF']):
+                print(f'\tNew nn_query word count {garbage_count_difference}'
+                      ' under LOOP_CUTOFF {}'.format(config['NN_LOOP_WORDS']))
                 break
         garbage_count_old = garbage_count_new
-        garbage_words = get_random_words(FINNISH_CONSONANTS,
-                                         MIN_LENGTH,
-                                         MAX_LENGTH,
-                                         NUM_GARBAGE_WORDS)
+        garbage_words = get_random_words(config['RANDOM_CONSONANTS'],
+                                         config['RANDOM_MIN_LENGTH'],
+                                         config['RANDOM_MAX_LENGTH'],
+                                         config['NN_LOOP_WORDS'])
         write_garbage_to_database(config, model, db, garbage_words)
 
     print('Completed')

@@ -23,7 +23,6 @@ import fasttext
 import pexpect
 
 
-
 NUM_NEIGHBORS = 10
 
 
