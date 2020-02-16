@@ -86,15 +86,17 @@ elif ACTION == 'spell_checker':
 
 elif ACTION == 'remove':
     import ft_remove_garbage
-    ft_remove_garbage.remove_garbage_from_vecfile(config, args.vec, args.output)
+    ft_remove_garbage.remove_garbage_from_vecfile(config,
+                                                  args.vec,
+                                                  args.output)
     ft_remove_garbage.add_header_to_vecfile(args.output)
     sys.exit(0)
 
 elif ACTION == 'vocabulary':
     import ft_vocab
-    ft_vocab.create_vocab_file(args.output, args.vocab)
+    ft_vocab.create_vocab_file(config, args.output, args.vocab)
     sys.exit(0)
 
 else:
-    print('Error: Action {} not found'.format(ACTION))
+    print(f'Error: Action {ACTION} not found')
     sys.exit(5)

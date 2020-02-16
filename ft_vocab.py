@@ -19,16 +19,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import sys
 import re
-import libvoikko
+import sys
+
+from ft_spell_checker import SpellChecker
 
 
 # check python version >= 3.6
 assert sys.version_info >= (3, 6)
 
 
-def create_vocab_file(vecfile, vocabfile):
+def create_vocab_file(config, vecfile, vocabfile):
     # read vector file
     vocab = {}
     with open(vecfile) as infile:
@@ -42,21 +43,13 @@ def create_vocab_file(vecfile, vocabfile):
                 vocab[word.lower()] = True
     print(f'Found {len(vocab)} words\n')
 
-    # initialize voikko
-    voikko = libvoikko.Voikko(u'fi')
-
     # write vocab file
+    sc = SpellChecker(config)
     with open(vocabfile, 'w') as outfile:
         print(f'\tWriting {vocabfile}')
         for word in sorted(vocab.keys()):
             # get lexical class and plurality
-            morpho = voikko.analyze(word)
-            if len(morpho):
-                classification = morpho[0].get('CLASS', 'UNKNOWN')
-                plurality = morpho[0].get('NUMBER', 'UNKNOWN')
-            else:
-                classification = 'UNKNOWN'
-                plurality = 'UNKNOWN'
+            classification, plurality = sc.morpho(word)
             # write word TAB class TAB plurality
             line = f'{word}\t{classification}\t{plurality}\n'
             outfile.write(line)
@@ -65,17 +58,7 @@ def create_vocab_file(vecfile, vocabfile):
 
 if __name__ == "__main__":
     # execute only if run as a script
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--vec',
-                        required=False,
-                        default='./cc.fi.300.filtered.vec')
-    parser.add_argument('--vocab',
-                        required=False,
-                        default='./cc.fi.300.filtered.vocab')
-    args = parser.parse_args()
+    from ft_config import load_config
+    config = load_config()
 
-    VEC_FILE = args.vec  # default './cc.fi.300.filtered.vec'
-    VOCAB_FILE = args.output  # default './cc.fi.300.filtered.vocab'
-
-    create_vocab_file(VEC_FILE, VOCAB_FILE)
+    create_vocab_file(config, config['VEC_FILE'], config['VOCAB_FILE'])

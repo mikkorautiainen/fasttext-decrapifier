@@ -19,8 +19,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import sys
 import libvoikko
+import sys
 
 from ft_dbconnect import MysqlDB
 
@@ -29,22 +29,48 @@ from ft_dbconnect import MysqlDB
 assert sys.version_info >= (3, 6)
 
 
-def run_spell_checker():
-    db = MysqlDB()
+class SpellChecker:
+    def __init__(self, config):
+        self.language = config['LANGUAGE'].lower()
+        if self.language == 'finnish':
+            import libvoikko
+            self.checker = libvoikko.Voikko(u'fi')
+        elif self.language == 'japanese':
+            print(f'Spelling checker for Japanese is not yet implemented')
+            sys.exit(4)
+        else:
+            text_language = self.language.capitalize()
+            print(f'Spell checking for {text_language} is not supported')
+            sys.exit(4)
 
+    def check(self, word):
+        if self.language == 'finnish':
+            return self.checker.spell(word)
+
+    def morpho(self, word):
+        if self.language == 'finnish':
+            morpho = self.checker.analyze(word)
+            if len(morpho):
+                classification = morpho[0].get('CLASS', 'UNKNOWN')
+                plurality = morpho[0].get('NUMBER', 'UNKNOWN')
+            else:
+                classification = 'UNKNOWN'
+                plurality = 'UNKNOWN'
+            return classification, plurality
+
+
+def run_spell_checker(config):
+    db = MysqlDB(config)
     garbwords = db.get_all_words()
     if not garbwords:
         print('\tError: No garbage words found in database')
         return False
 
-    # initialize voikko
-    voikko = libvoikko.Voikko(u'fi')
-
     # remove word from database if it passes spell checker
+    sc = SpellChecker(config)
     for json in garbwords:
         word = str(json.get('word'))
-#        print(word)
-        if voikko.spell(word):
+        if sc.check(word):
             print(f'Removing {word} because it passed the spell ckecker')
             db.words_remove_garbword(word)
             db.commit()
@@ -52,5 +78,7 @@ def run_spell_checker():
 
 if __name__ == "__main__":
     # execute only if run as a script
+    from ft_config import load_config
+    config = load_config()
 
-    run_spell_checker()
+    run_spell_checker(config)
