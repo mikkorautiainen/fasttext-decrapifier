@@ -22,27 +22,16 @@
 
 import argparse
 import sys
-import json
-from pathlib import Path
+
+from ft_config import load_config
 
 
 # check python version >= 3.6
 assert sys.version_info >= (3, 6)
 
 
-DEFAULT_CONFIG_FILE_PATH='./config.json'
-
-
-def load_config(filepath):
-    config = {}
-    config_file = Path(filepath)
-    if config_file.exists():
-        with open(filepath) as f:
-            config = json.load(f)
-        # print(config)
-    return config
-
-config = load_config(DEFAULT_CONFIG_FILE_PATH)
+# read config.json
+config = load_config()
 
 
 # parse arguments
@@ -72,7 +61,6 @@ args = parser.parse_args()
 
 
 # constants
-ACTION = args.action.lower()
 BIN_FILE = args.bin      # default './cc.fi.300.bin'
 VEC_FILE = args.vec      # default './cc.fi.300.vec'
 OUT_FILE = args.output   # default './cc.fi.300.filtered.vec'
@@ -80,8 +68,7 @@ VOCAB_FILE = args.vocab  # default './cc.fi.300.filtered.vocab'
 
 
 # actions
-
-
+ACTION = args.action.lower()
 if ACTION == 'init':
     from ft_dbconnect import MysqlDB
     db = MysqlDB(config)
