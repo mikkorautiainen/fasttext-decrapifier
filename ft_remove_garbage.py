@@ -24,6 +24,7 @@ import sys
 import re
 
 from ft_dbconnect import MysqlDB
+from ft_spell_checker import SpellChecker
 
 
 # check python version >= 3.6
@@ -47,25 +48,38 @@ def remove_garbage_from_vecfile(config, vecfile, new_vecfile):
     """
     db = MysqlDB(config)
 
+    if config['REGEX_FOREIGN']:
+        sc = SpellChecker(config)
+
     outfile = open(new_vecfile, 'w')
 
     with open(vecfile) as infile:
-        print('Removing', end='')
+        count = 0
+        print('Removing words from vec-file', end='')
         regex = r'^([^ ]+) '
         for line in infile:
             m = re.match(regex, line)  # get the first word
             if m is not None:
                 word = m.group(1)
                 if "'" in word or '\\' in word:
-                    print(f' {word}', end='')
+                    print(f' {word} ', end='')
                     continue
+                # remove if foreign characters and fails spelling checker
+                if config['REGEX_FOREIGN']:
+                    if re.search(config['REGEX_FOREIGN'], word):
+                        if not sc.spelling(word):
+                            print(f' {word} ', end='')
+                            continue
                 cur = db.find_word(word)  # search garbwords table
                 if int(cur.rowcount) <= 0:
                     # Not in the garbage words
                     # print(f'Adding {word} as it is not in garbage DB')
                     outfile.write(line)
                 else:
-                    print(f' {word}', end='')
+                    print('.', end='') # show normal removed word as dot
+            if not count % 100:
+                print('') # print carriage return every 100 iterations
+            count += 1
         print('\n')
     outfile.close()
 
@@ -97,18 +111,8 @@ def add_header_to_vecfile(vecfile):
 
 if __name__ == "__main__":
     # execute only if run as a script
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--vec',
-                        required=False,
-                        default='./cc.fi.300.vec')
-    parser.add_argument('--output',
-                        required=False,
-                        default='./cc.fi.300.filtered.vec')
-    args = parser.parse_args()
+    from ft_config import load_config
+    config = load_config()
 
-    VEC_FILE = args.vec  # default './cc.fi.300.vec'
-    OUT_FILE = args.output  # default './cc.fi.300.filtered.vec'
-
-    remove_garbage_from_vecfile(VEC_FILE, OUT_FILE)
-    add_header_to_vecfile(OUT_FILE)
+    remove_garbage_from_vecfile(config, config['VEC_FILE'], config['OUT_FILE'])
+    add_header_to_vecfile(config['OUT_FILE'])
