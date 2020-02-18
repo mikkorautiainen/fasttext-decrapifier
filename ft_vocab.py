@@ -53,7 +53,7 @@ def create_vocab_file(config, vecfile, vocabfile):
             # write word TAB class TAB plurality
             line = f'{word}\t{classification}\t{plurality}\n'
             outfile.write(line)
-        print(f'Vocab file creation complete\n')
+        print('Vocab file creation complete\n')
 
 
 if __name__ == "__main__":

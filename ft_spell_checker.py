@@ -19,7 +19,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import libvoikko
 import sys
 
 from ft_dbconnect import MysqlDB
@@ -36,14 +35,14 @@ class SpellChecker:
             import libvoikko
             self.checker = libvoikko.Voikko(u'fi')
         elif self.language == 'japanese':
-            print(f'Spelling checker for Japanese is not yet implemented')
+            print('Spelling checker for Japanese is not yet implemented')
             sys.exit(4)
         else:
             text_language = self.language.capitalize()
             print(f'Spell checking for {text_language} is not supported')
             sys.exit(4)
 
-    def check(self, word):
+    def spelling(self, word):
         if self.language == 'finnish':
             return self.checker.spell(word)
 
@@ -70,7 +69,7 @@ def run_spell_checker(config):
     sc = SpellChecker(config)
     for json in garbwords:
         word = str(json.get('word'))
-        if sc.check(word):
+        if sc.spelling(word):
             print(f'Removing {word} because it passed the spell ckecker')
             db.words_remove_garbword(word)
             db.commit()

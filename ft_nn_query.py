@@ -94,11 +94,11 @@ def run_nn_random(config, bin_file):
         else:
             garbage_count_difference = garbage_count_new - garbage_count_old
             print(f'\tFound {garbage_count_difference} new nn_query words'
-                  ' in {} iterations'.format(config['NN_LOOP_WORDS']))
+                  f' in {config["NN_LOOP_WORDS"]} iterations')
             # check NN_LOOP_CUTOFF
             if garbage_count_difference < int(config['NN_LOOP_CUTOFF']):
                 print(f'\tNew nn_query word count {garbage_count_difference}'
-                      ' under LOOP_CUTOFF {}'.format(config['NN_LOOP_WORDS']))
+                      f' under LOOP_CUTOFF {config["NN_LOOP_WORDS"]}')
                 break
         garbage_count_old = garbage_count_new
         garbage_words = get_random_words(config['RANDOM_CONSONANTS'],

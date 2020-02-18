@@ -44,7 +44,7 @@ class MysqlDB:
             # self.connect()  # sets cls.db
             MysqlDB.db = self.db
         except:
-            print("Failed to connect to database {}".format(self.database['dbname']))
+            print(f"Failed to connect to database {self.database['dbname']}")
             self.db = mysql.connector.connect(user=self.database['user'],
                                               password=self.database['password'],
                                               host=self.database['host'],

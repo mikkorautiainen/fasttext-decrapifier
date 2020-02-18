@@ -37,4 +37,7 @@ def load_config(filepath=DEFAULT_CONFIG_FILE_PATH):
     if config_file.exists():
         with open(filepath) as f:
             config = json.load(f)
+    if not config:
+        print(f'Error: Failed to read config file "{filepath}"\n')
+        sys.exit(3)
     return config
