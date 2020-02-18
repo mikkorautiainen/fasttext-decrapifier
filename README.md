@@ -1,7 +1,7 @@
 fastText Decrapifier
 ========
 
- This tool removes non-Finnish words from Facebook's fastText (https://fasttext.cc/) vec-file. This reduces the vec-file size for an efficient use of the resource.\
+ This tool removes non-Finnish words from Facebook's fastText (https://fasttext.cc/) vec-file.\
  The Python code can be customized easily to work with other languages. Please submit a pull request or share your changes with us if this helps you with your language. 
 
 <!-- TOC depthFrom:1 depthTo:2 withLinks:1 updateOnSave:1 orderedList:0 -->
@@ -9,7 +9,7 @@ fastText Decrapifier
 - [Prerequisite](#prerequisite)
 - [Installation](#installation)
 - [Data and fastText](#data-and-fasttext)
-- [Run CLI](#run-cli)
+- [Running CLI](#running-cli)
   - [Database initialization](#database-initialization)
   - [Regex](#regex)
   - [Nearest neighbor iteration](#nearest-neighbor-iteration)
@@ -25,10 +25,10 @@ fastText Decrapifier
 # Prerequisite
 
 - Python 3.6 or later
-- virtualenv
 - fastText executable
 - MySQL or MariaDB
 - Voikko spell checker
+- libvoikko library 4.3 or later
 
 &nbsp;
 # Installation
@@ -36,7 +36,7 @@ fastText Decrapifier
 ```
 git clone https://github.com/mikkorautiainen/fasttext-decrapifier
 cd fasttext-decrapifier
-virtualenv --python=python3.6 venv
+python3.6 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
@@ -50,7 +50,7 @@ The code expects the following files to be in the project root:
    3. word vectors in vec-format
 
 &nbsp;
-You can symbolically link your files located elsewhere to the project root like so:
+You can symbolically link the files to the project root:
 ```
 ln -s /usr/src/fastText/fasttext .
 ln -s /data/cc.fi.300.bin .
@@ -64,19 +64,18 @@ ln -s /data/cc.fi.300.vec .
 
 &nbsp;
 ## Database initialization
-The database connection setting are hardcoded in ft_dbconnect.py file as below:
+The database connection parameters are specified in [config.json](config.json):
 ```
-DB = {
-    'DB': 'decrapper',
-    'TABLE': 'garbwords',
-    'USER': 'root',
-    'PASSWORD': '',
-    'HOST': 'localhost',
-    'PORT': '3306'
-}
+  "DATABASE": {
+    "dbname":  "decrapper",
+    "table": "garbwords",
+    "user":  "root",
+    "password": "",
+    "host": "localhost",
+    "port": "3306"
+  }
 ```
-It is best to change the USER and the PASSWORD to your MySQL setting for the decrapifier to connect to your MySQL instance.\
-Once you are done changing the user and the password, please run the "init" action to build the database and the table for the decrapifier. 
+Once you are done changing the user and the password, please run the "init" action to create the database and table.
 ```
 python decrapper.py --action init
 ```
@@ -112,4 +111,4 @@ python decrapper.py --action vocabulary
 &nbsp;
 # License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
