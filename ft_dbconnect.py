@@ -77,7 +77,9 @@ class MysqlDB:
         self.execute(query, ())
 
         print(f"Creating database {self.database['dbname']}")
-        query = f"CREATE DATABASE {self.database['dbname']}"
+        query = f'CREATE DATABASE {self.database["dbname"]} ' \
+                f' CHARACTER SET = `{self.database["charset"]}` ' \
+                f' COLLATE = `{self.database["collation"]}` '
         self.execute(query, ())
 
         # reinitialize database connection
@@ -89,7 +91,10 @@ class MysqlDB:
                  '    `regexflag` tinyint(4) NOT NULL, ' \
                  '    `value` float DEFAULT 0, ' \
                  '    PRIMARY KEY (`word`(255)) ' \
-                 ' ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 '
+                 ' ) ENGINE = `InnoDB` ' \
+                 ' DEFAULT ' \
+                f' CHARACTER SET = `{self.database["charset"]}` ' \
+                f' COLLATE = `{self.database["collation"]}` '
         self.execute(query, ())
 
     def words_insert_garbword(self, word, reflag):

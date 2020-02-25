@@ -10,6 +10,7 @@
   "_comment_regex_negative_1": "Exclude words beginning with dash",
   "_comment_regex_negative_2": "and containing consecutive dashes",
   "REGEX_NEGATIVE": "^-|--",
+  "_comment_regex_foreign": "Exclude if matches and doesn't pass spell check",
   "REGEX_FOREIGN": "[ŠšŽž]",
   "RANDOM_CONSONANTS": "bdfghjklmnprstv",
   "RANDOM_MIN_LENGTH": "4",
@@ -22,6 +23,8 @@
     "user":  "root",
     "password": "",
     "host": "localhost",
-    "port": "3306"
+    "port": "3306",
+    "charset": "utf8",
+    "collation": "utf8_estonian_ci"
   }
 }
