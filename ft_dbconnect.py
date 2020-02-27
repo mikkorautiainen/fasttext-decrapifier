@@ -136,20 +136,3 @@ class MysqlDB:
 
     def commit(self):
         self.db.commit()
-
-
-if __name__ == '__main__':
-    """ test """
-    db = MysqlDB()
-
-    db.words_insert_garbword('aaaa0', 0)
-    db.words_insert_garbword('aaaa0', 0)
-    db.words_insert_garbword('aaaa0', 0)
-    db.commit()
-
-    cur = db.execute('SELECT * FROM garbwords', ())
-    all = db.fetchall()
-    print(all)
-
-    x = db.find_word('duck')
-    print(x)
