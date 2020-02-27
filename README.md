@@ -2,7 +2,7 @@ fastText Decrapifier
 ========
 
  This tool removes non-Finnish words from Facebook's fastText (https://fasttext.cc/) vec-file.\
- The Python code can be customized easily to work with other languages. Please submit a pull request or share your changes with us if this helps you with your language. 
+ The configuration file can be easily customized to work with any languages. If this helps you with your language, please submit a pull request or share your changes with us.
 
 <!-- TOC depthFrom:1 depthTo:2 withLinks:1 updateOnSave:1 orderedList:0 -->
 
@@ -64,7 +64,7 @@ ln -s /data/cc.fi.300.vec .
 
 &nbsp;
 ## Database initialization
-The database connection parameters are specified in [config.json](config.json):
+The database parameters are specified in [config.json](config.json):
 ```
   "DATABASE": {
     "dbname":  "decrapper",
@@ -72,9 +72,15 @@ The database connection parameters are specified in [config.json](config.json):
     "user":  "root",
     "password": "",
     "host": "localhost",
-    "port": "3306"
+    "port": "3306",
+    "charset": "utf8", 
+    "collation": "utf8_estonian_ci"
   }
 ```
+Note: It is crucial that you set the correct collation for your language, otherwise the program will fail to differentiate your language’s special characters and accents. The collation must be case-insensitive.\
+For example the Finnish language requires Estonian collation. The wrong collation will cause the program to remove “määrä” when it should only remove “maara” or remove “kasino” when it should only remove “kašino”.
+
+&nbsp;
 Once you are done changing the user and the password, please run the "init" action to create the database and table.
 ```
 python decrapper.py --action init
