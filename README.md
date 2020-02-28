@@ -2,7 +2,7 @@ fastText Decrapifier
 ========
 
  This tool removes non-Finnish words from Facebook's fastText (https://fasttext.cc/) vec-file.\
- The Python code can be customized easily to work with other languages. Please submit a pull request or share your changes with us if this helps you with your language. 
+ The configuration file can be easily customized to work with any language. If this project helps you with your language, please submit a pull request or share your changes with us.
 
 <!-- TOC depthFrom:1 depthTo:2 withLinks:1 updateOnSave:1 orderedList:0 -->
 
