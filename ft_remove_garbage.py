@@ -39,7 +39,7 @@ def remove_garbage_from_vecfile(config, vecfile, new_vecfile):
     for line in file:
        word = line.chars-up-to-first-space
        select word in garbwords-db-table
-       if not found-entry:
+       if entry not found:
           # this is a ok word
           write this line to ok-words-file
        else:
@@ -55,9 +55,10 @@ def remove_garbage_from_vecfile(config, vecfile, new_vecfile):
 
     with open(vecfile) as infile:
         count = 0
-        print('Removing words from vec-file', end='')
+        print('Removing words from vec-file')
         regex = r'^([^ ]+) '
         for line in infile:
+            count += 1
             m = re.match(regex, line)  # get the first word
             if m is not None:
                 word = m.group(1)
@@ -70,16 +71,14 @@ def remove_garbage_from_vecfile(config, vecfile, new_vecfile):
                         if not sc.spelling(word):
                             print(f' {word} ', end='')
                             continue
-                cur = db.find_word(word)  # search garbwords table
-                if int(cur.rowcount) <= 0:
-                    # Not in the garbage words
-                    # print(f'Adding {word} as it is not in garbage DB')
-                    outfile.write(line)
-                else:
-                    print('.', end='') # show normal removed word as dot
+                # remove if found in garbwords table
+                if db.find_word(word):
+                    print('.', end='')  # show normal removed word as dot
+                    continue
+                # everthing is ok - write line to output file
+                outfile.write(line)
             if not count % 100:
-                print('') # print carriage return every 100 iterations
-            count += 1
+                print('')  # print carriage return every 100 iterations
         print('\n')
     outfile.close()
 

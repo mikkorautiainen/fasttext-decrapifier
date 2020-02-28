@@ -41,16 +41,14 @@ class MysqlDB:
                                               port=self.database['port'],
                                               database=self.database['dbname'],
                                               use_pure=True)
-            # self.connect()  # sets cls.db
             MysqlDB.db = self.db
         except:
-            print(f"Failed to connect to database {self.database['dbname']}")
+            print(f'Failed to connect to database {self.database["dbname"]}')
             self.db = mysql.connector.connect(user=self.database['user'],
                                               password=self.database['password'],
                                               host=self.database['host'],
                                               port=self.database['port'],
                                               use_pure=True)
-            # self.connect()  # sets cls.db
             MysqlDB.db = self.db
 
     def execute(self, sql, values):
@@ -60,7 +58,7 @@ class MysqlDB:
             self.cursor.execute(sql, values)
             return self.cursor
         except mysql.connector.Error as err:
-            print(f"Something went wrong: {err} on {sql}")
+            print(f'Something went wrong: {err} on {sql}')
         return None
 
     def fetchall(self):
@@ -73,11 +71,11 @@ class MysqlDB:
 
     def initialize_database(self):
         """ initialize mysql database from ground 0 """
-        query = f"DROP DATABASE IF EXISTS {self.database['dbname']}"
+        query = f'DROP DATABASE IF EXISTS {self.database["dbname"]}'
         self.execute(query, ())
 
-        print(f"Creating database {self.database['dbname']}")
-        query = f"CREATE DATABASE {self.database['dbname']}"
+        print(f'Creating database {self.database["dbname"]}')
+        query = f'CREATE DATABASE {self.database["dbname"]}'
         self.execute(query, ())
 
         # reinitialize database connection
@@ -89,7 +87,7 @@ class MysqlDB:
                  '    `regexflag` tinyint(4) NOT NULL, ' \
                  '    `value` float DEFAULT 0, ' \
                  '    PRIMARY KEY (`word`(255)) ' \
-                 ' ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 '
+                 ' ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4'
         self.execute(query, ())
 
     def words_insert_garbword(self, word, reflag):
@@ -104,16 +102,25 @@ class MysqlDB:
         return self.execute(query, ())
 
     def find_word(self, word, table='garbwords'):
-        """ Checks if word exists in arg table. """
+        """ check if word exists in garbwords table """
         regex1 = r'.*\'.*'
-        regex2 = r'.*\\.*'
         if re.match(regex1, word) is not None:
             word = word.replace('\'', '\\\'')
-        elif re.match(regex2, word) is not None:
+        regex2 = r'.*\\.*'
+        if re.match(regex2, word) is not None:
             word = word.replace('\\', '\\\\')
+        word = word.lower()
 
         query = f'SELECT word FROM {table} WHERE word = \'{word}\' LIMIT 1'
-        return self.execute(query, ())
+        cur = self.execute(query, ())
+        all = cur.fetchall()
+        # collation causes the database to greedy match foreign characters
+        # match confirmed when the returned result equals the queried word
+        for result in all:
+            found_word = str(result['word']).lower()
+            if found_word == word:
+                return True
+        return False
 
     def get_all_words(self, table='garbwords'):
         """ get all words in garbwords without regex flag """
@@ -131,20 +138,3 @@ class MysqlDB:
 
     def commit(self):
         self.db.commit()
-
-
-if __name__ == '__main__':
-    """ test """
-    db = MysqlDB()
-
-    db.words_insert_garbword('aaaa0', 0)
-    db.words_insert_garbword('aaaa0', 0)
-    db.words_insert_garbword('aaaa0', 0)
-    db.commit()
-
-    cur = db.execute('SELECT * FROM garbwords', ())
-    all = db.fetchall()
-    print(all)
-
-    x = db.find_word('duck')
-    print(x)
