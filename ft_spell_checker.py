@@ -35,16 +35,20 @@ class SpellChecker:
             import libvoikko
             self.checker = libvoikko.Voikko(u'fi')
         elif self.language == 'japanese':
-            print('Spelling checker for Japanese is not yet implemented')
-            sys.exit(4)
+            print('Warning:'
+                  ' Spelling checker for Japanese is not yet implemented')
+            self.checker = False
         else:
             text_language = self.language.capitalize()
-            print(f'Spell checking for {text_language} is not supported')
-            sys.exit(4)
+            print('Warning:'
+                  f' Spell checking for {text_language} is not supported')
+            self.checker = False
 
     def spelling(self, word):
         if self.language == 'finnish':
             return self.checker.spell(word)
+        else:
+            return True
 
     def morpho(self, word):
         if self.language == 'finnish':
@@ -55,7 +59,10 @@ class SpellChecker:
             else:
                 classification = 'UNKNOWN'
                 plurality = 'UNKNOWN'
-            return classification, plurality
+        else:
+            classification = 'UNKNOWN'
+            plurality = 'UNKNOWN'
+        return classification, plurality
 
 
 def run_spell_checker(config):
@@ -67,12 +74,17 @@ def run_spell_checker(config):
 
     # remove word from database if it passes spell checker
     sc = SpellChecker(config)
+    count = 0
+    print('Removing words from database')
     for json in garbwords:
+        count += 1
         word = str(json.get('word'))
         if sc.spelling(word):
-            print(f'Removing {word} because it passed the spell ckecker')
             db.words_remove_garbword(word)
             db.commit()
+            print('.', end='')  # show removed word as dot
+        if not count % 100:
+            print('')  # print carriage return every 100 iterations
 
 
 if __name__ == "__main__":
