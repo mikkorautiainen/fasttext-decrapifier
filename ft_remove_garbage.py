@@ -31,6 +31,23 @@ from ft_spell_checker import SpellChecker
 assert sys.version_info >= (3, 6)
 
 
+def remove_special_cases(config, sc, word):
+    # remove "'" and "\" characters
+    if "'" in word or '\\' in word:
+        return True
+    # remove if length under nn_query RANDOM_MIN_LENGTH and fails spell checker
+    if len(word) < int(config['RANDOM_MIN_LENGTH']):
+        if not sc.spelling(word):
+            return True
+    # remove if foreign characters and fails spelling checker
+    if config['REGEX_FOREIGN']:
+        if re.search(config['REGEX_FOREIGN'], word):
+            if not sc.spelling(word):
+                return True
+    # keep word if none of the above match
+    return False
+
+
 def remove_garbage_from_vecfile(config, vecfile, new_vecfile):
     """
     file = open vecfile
@@ -39,7 +56,7 @@ def remove_garbage_from_vecfile(config, vecfile, new_vecfile):
     for line in file:
        word = line.chars-up-to-first-space
        select word in garbwords-db-table
-       if entry not found:
+       if not found-entry:
           # this is a ok word
           write this line to ok-words-file
        else:
@@ -48,8 +65,7 @@ def remove_garbage_from_vecfile(config, vecfile, new_vecfile):
     """
     db = MysqlDB(config)
 
-    if config['REGEX_FOREIGN']:
-        sc = SpellChecker(config)
+    sc = SpellChecker(config)
 
     outfile = open(new_vecfile, 'w')
 
@@ -62,15 +78,9 @@ def remove_garbage_from_vecfile(config, vecfile, new_vecfile):
             m = re.match(regex, line)  # get the first word
             if m is not None:
                 word = m.group(1)
-                if "'" in word or '\\' in word:
+                if remove_special_cases(config, sc, word):
                     print(f' {word} ', end='')
                     continue
-                # remove if foreign characters and fails spelling checker
-                if config['REGEX_FOREIGN']:
-                    if re.search(config['REGEX_FOREIGN'], word):
-                        if not sc.spelling(word):
-                            print(f' {word} ', end='')
-                            continue
                 # remove if found in garbwords table
                 if db.find_word(word):
                     print('.', end='')  # show normal removed word as dot
