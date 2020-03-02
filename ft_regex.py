@@ -30,38 +30,43 @@ assert sys.version_info >= (3, 6)
 
 
 def simple_regex_check(config, word):
-    """ Fail if word doesn't match REGEX_POSITIVE """
+    # Fail if word doesn't match REGEX_POSITIVE
     if re.match(config['REGEX_POSITIVE'], word) is None:
         return False
-    """ Fail if word matchs REGEX_NEGATIVE """
-    if re.search(config['REGEX_NEGATIVE'], word):
+    # Fail if word matchs REGEX_NEGATIVE
+    elif re.search(config['REGEX_NEGATIVE'], word):
         return False
-    return True
+    # Fail if word matchs REGEX_REPEAT
+    elif re.search(config['REGEX_REPEAT'], word):
+        return False
+    else:
+        return True
 
 
 def regex_vecfile(config, vecfile):
     """
-    Runs the regex on the vec file entries and add the word if the word
-    did not match the regex=garbage word.
-    Reads line by line from the vec file.
-    Check if the word in line has a matching entry in garbwords table.
-    Insert the word if not in the table.
+    Runs the regex on the vec-file entries and
+    adds the word if the word matches the regex == garbage word.
+    Reads vec-file line by line and inserts garbage words to garbwords table.
     """
     db = MysqlDB(config)
+    print('Adding garbage words to database')
     with open(vecfile) as infile:
         for line in infile:
             text_regex = r'^([^ ]+) '
-            m = re.match(text_regex, line)  # get the first word
+            m = re.match(text_regex, line)  # get the first field
             if m is not None:
                 word = m.group(1)
                 if not simple_regex_check(config, word):
                     result = db.words_insert_garbword(word, 1)
                     if hasattr(result, 'lastrowid'):
-                        print(f'Added {word} because it failed the regex')
+                        print(f'{word} ', end='')  # show garbage word
                     else:
-                        print(f'Failed to add {word} to the database')
+                        print(f'\nError: Failed to add {word} to the database\n')
     # commit to db
+    print('\n\nCommitting garbage words to database')
     db.commit()
+    print('\nRegex done')
 
 
 if __name__ == "__main__":
