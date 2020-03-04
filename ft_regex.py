@@ -50,11 +50,13 @@ def regex_vecfile(config, vecfile):
     Reads vec-file line by line and inserts garbage words to garbwords table.
     """
     db = MysqlDB(config)
+
     print('Adding garbage words to database')
     with open(vecfile) as infile:
+        count = 0
         for line in infile:
-            text_regex = r'^([^ ]+) '
-            m = re.match(text_regex, line)  # get the first field
+            count += 1
+            m = re.match(r'^([^ ]+) ', line)  # get the first field
             if m is not None:
                 word = m.group(1)
                 if not simple_regex_check(config, word):
@@ -62,7 +64,10 @@ def regex_vecfile(config, vecfile):
                     if hasattr(result, 'lastrowid'):
                         print(f'{word} ', end='')  # show garbage word
                     else:
-                        print(f'\nError: Failed to add {word} to the database\n')
+                        print(f'\nError: Failed to add "{word}" to database\n')
+            if not count % 60:
+                print('')  # print carriage return every 60 iterations
+
     # commit to db
     print('\n\nCommitting garbage words to database')
     db.commit()
