@@ -58,7 +58,7 @@ class MysqlDB:
             self.cursor.execute(sql, values)
             return self.cursor
         except mysql.connector.Error as err:
-            print(f'Something went wrong: {err} on {sql}')
+            print(f'Error: Something went wrong: {err} on {sql}')
         return None
 
     def fetchall(self):
@@ -112,14 +112,30 @@ class MysqlDB:
         word = word.lower()
 
         query = f'SELECT word FROM {table} WHERE word = \'{word}\' LIMIT 1'
+
         cur = self.execute(query, ())
         all = cur.fetchall()
+
         # collation causes the database to greedy match foreign characters
         # match confirmed when the returned result equals the queried word
         for result in all:
-            found_word = str(result['word']).lower()
-            if found_word == word:
-                return True
+            # mysql-connector converts numbers to ints and floats, causing
+            # string comparisons to sometimes fail e.g. "01.50" != "1.5"
+            if isinstance(result['word'], int):
+                try:
+                    if result['word'] == int(word):
+                        return True
+                except ValueError:
+                    print(f'\nWarning: word "{word}" is not an integer')
+            elif isinstance(result['word'], float):
+                try:
+                    if result['word'] == float(word):
+                        return True
+                except ValueError:
+                    print(f'\nWarning: word "{word}" is not a float')
+            else:
+                if str(result['word']).lower() == word:
+                    return True
         return False
 
     def get_all_words(self, table='garbwords'):
