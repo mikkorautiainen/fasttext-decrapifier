@@ -32,8 +32,8 @@ assert sys.version_info >= (3, 6)
 
 
 def remove_special_cases(config, sc, word):
-    # remove "'" and "\" characters
-    if "'" in word or '\\' in word:
+    # remove words with "'", "\" and Latin œ characters
+    if "'" in word or '\\' in word or u'\u0153' in word:
         return True
     # remove if length under nn_query RANDOM_MIN_LENGTH and fails spell checker
     if len(word) < int(config['RANDOM_MIN_LENGTH']):
