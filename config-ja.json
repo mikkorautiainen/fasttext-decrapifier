@@ -1,0 +1,30 @@
+{
+  "LANGUAGE": "japanese",
+  "FASTTEXT_PATH": "../fasttext",
+  "BIN_FILE": "../japanese/cc.ja.300.bin",
+  "VEC_FILE": "../japanese/cc.ja.300.vec",
+  "OUT_FILE": "../japanese/cc.ja.300.filtered.vec",
+  "VOCAB_FILE": "../japanese/cc.ja.300.filtered.vocab",
+  "_comment_regex_positive": "C, Q, W, X or Z excluded",
+  "REGEX_POSITIVE": "^([\u4E00-\u9FFF]|[\u3040-\u309Fー]|[\u30A0-\u30FF]|[0-9、。「」（）％＆＄＃])+$",
+  "_comment_regex_negative_1": "Exclude words beginning with dash",
+  "_comment_regex_negative_2": "and containing consecutive dashes",
+  "REGEX_NEGATIVE": "",
+  "_comment_regex_foreign": "Exclude if matches and doesn't pass spell check",
+  "REGEX_FOREIGN": "",
+  "_comment_regex_repeat": "Exclude if 3 or more consecutive repeated letters",
+  "REGEX_REPEAT": "(\\w)\\1{2,}",
+  "RANDOM_CONSONANTS": "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよわをんアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨワヲン",
+  "RANDOM_MIN_LENGTH": "4",
+  "RANDOM_MAX_LENGTH": "20",
+  "NN_LOOP_CUTOFF": "100",
+  "NN_LOOP_WORDS": "100",
+  "DATABASE": {
+    "dbname":  "decrapper",
+    "table": "garbwords",
+    "user":  "root",
+    "password": "revtechevo",
+    "host": "localhost",
+    "port": "3306"
+  }
+}

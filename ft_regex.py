@@ -34,10 +34,10 @@ def simple_regex_check(config, word):
     if re.match(config['REGEX_POSITIVE'], word) is None:
         return False
     # Fail if word matchs REGEX_NEGATIVE
-    elif re.search(config['REGEX_NEGATIVE'], word):
+    elif 0<len(config['REGEX_NEGATIVE']) and re.search(config['REGEX_NEGATIVE'], word):
         return False
     # Fail if word matchs REGEX_REPEAT
-    elif re.search(config['REGEX_REPEAT'], word):
+    elif 0<len(config['REGEX_REPEAT']) and re.search(config['REGEX_REPEAT'], word):
         return False
     else:
         return True
@@ -56,7 +56,7 @@ def regex_vecfile(config, vecfile):
         count = 0
         for line in infile:
             count += 1
-            m = re.match(r'^([^ ]+) ', line)  # get the first field
+            m = re.match(r'^([^"\\ ]+) ', line)  # get the first field
             if m is not None:
                 word = m.group(1)
                 if not simple_regex_check(config, word):
@@ -64,6 +64,7 @@ def regex_vecfile(config, vecfile):
                     if hasattr(result, 'lastrowid'):
                         print(f'{word} ', end='')  # show garbage word
                     else:
+                        import pdb; pdb.set_trace()
                         print(f'\nError: Failed to add "{word}" to database\n')
             if not count % 60:
                 print('')  # print carriage return every 60 iterations

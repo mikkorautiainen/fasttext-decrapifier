@@ -22,6 +22,7 @@
 import subprocess
 import sys
 import re
+import os
 
 from ft_dbconnect import MysqlDB
 from ft_spell_checker import SpellChecker
@@ -92,6 +93,17 @@ def remove_garbage_from_vecfile(config, vecfile, new_vecfile):
         print('\n')
     outfile.close()
 
+    
+def prepend_line_to_file(text, filepath):
+    tmpfile = './__ptemp'
+    with open(tmpfile, 'w') as tmp:
+        tmp.write(text)
+        with open(filepath, 'r') as input:
+            for line in input:
+                tmp.write(line)
+    os.rename(tmpfile, filepath)
+    return 0
+
 
 def add_header_to_vecfile(vecfile):
     # get column and row count
@@ -108,8 +120,12 @@ def add_header_to_vecfile(vecfile):
     # add header row
     header = f'{rows} {columns}'
     print(f'Adding header "{header}"')
+    """
     sed_command = f"1 i\{header}"
+    print(f"SED command opt and vec {sed_command} {vecfile}")
     result = subprocess.call(["sed", "-i", sed_command, vecfile])
+    """
+    result = prepend_line_to_file(header, vecfile)
     if result == 0:
         print('Header added successfully')
         return True

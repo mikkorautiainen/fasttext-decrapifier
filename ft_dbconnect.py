@@ -29,12 +29,11 @@ class MysqlDB:
 
     def __init__(self, config):
         """ connect to the database """
-
         try:
             if self.database is None:
                 self.database = config['DATABASE']
                 self.db = None
-
+            
             self.db = mysql.connector.connect(user=self.database['user'],
                                               password=self.database['password'],
                                               host=self.database['host'],
@@ -93,7 +92,7 @@ class MysqlDB:
     def words_insert_garbword(self, word, reflag):
         """ inserts a garbage word into the garbword table """
         query = 'INSERT INTO garbwords (`word`, `count`, `regexflag`) ' \
-                'VALUES (\'{}\', 1, {}) ' \
+                'VALUES ("{}", 1, {}) ' \
                 'ON DUPLICATE KEY UPDATE count=count + 1'.format(word, reflag)
         return self.execute(query, ())
 

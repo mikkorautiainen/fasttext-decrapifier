@@ -25,7 +25,6 @@ import sys
 
 from ft_config import load_config
 
-
 # check python version >= 3.6
 assert sys.version_info >= (3, 6)
 
