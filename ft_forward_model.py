@@ -47,7 +47,7 @@ class NNLookup:
         self.nn_process.sendline(word)
         self.nn_process.expect('Query word?')
         output = self.nn_process.before
-        output = output.decode('UTF-8')
+        output = output.decode('UTF-8', 'backslashreplace')
         words = []
         results = output.split('\r\n')[1:]
         for line in results:
@@ -63,7 +63,7 @@ class NNLookup:
         self.nn_process.sendline(word)
         self.nn_process.expect('Query word?')
         output = self.nn_process.before
-        output = output.decode('UTF-8')
+        output = output.decode('UTF-8', 'backslashreplace')
         results = output.split('\r\n')[1:]
         ret = []
         for line in results:
