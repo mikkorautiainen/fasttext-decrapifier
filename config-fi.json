@@ -1,10 +1,10 @@
 {
   "LANGUAGE": "finnish",
-  "FASTTEXT_PATH": "../fasttext",
-  "BIN_FILE": "../finnish/cc.fi.300.bin",
-  "VEC_FILE": "../finnish/cc.fi.300.vec",
-  "OUT_FILE": "../finnish/cc.fi.300.filtered.vec",
-  "VOCAB_FILE": "../finnish/cc.fi.300.filtered.vocab",
+  "FASTTEXT_PATH": "./fasttext",
+  "BIN_FILE": "cc.fi.300.bin",
+  "VEC_FILE": "cc.fi.300.vec",
+  "OUT_FILE": "cc.fi.300.filtered.vec",
+  "VOCAB_FILE": "cc.fi.300.filtered.vocab",
   "_comment_regex_positive": "C, Q, W, X or Z excluded",
   "REGEX_POSITIVE": "([abd-pr-vyABD-PR-VYÄäÖöÅåŠšŽž\\-\\']+$)",
   "_comment_regex_negative_1": "Exclude words beginning with dash",
@@ -23,7 +23,7 @@
     "dbname":  "decrapper",
     "table": "garbwords",
     "user":  "root",
-    "password": "revtechevo",
+    "password": "",
     "host": "localhost",
     "port": "3306"
   }

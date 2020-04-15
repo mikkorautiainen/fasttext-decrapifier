@@ -38,6 +38,11 @@ def load_config(filepath=DEFAULT_CONFIG_FILE_PATH):
         with open(filepath) as f:
             config = json.load(f)
     if not config:
-        print(f'Error: Failed to read config file "{filepath}"\n')
+        print(f'\nError: Failed to read config file "{filepath}"\n')
+        print('You need to copy one of the predefined config files ' \
+              'and modify ')
+        print('the database connection parameters to suit your system.\n')
+        print("For Finnish  run `cp config-fi.json config.json`")
+        print("For Japanese run `cp config-ja.json config.json`\n")
         sys.exit(3)
     return config
