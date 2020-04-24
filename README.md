@@ -1,13 +1,14 @@
 fastText Decrapifier
 ========
 
- This tool removes non-Finnish words from Facebook's fastText (https://fasttext.cc/) vec-file.\
+ This tool removes foreign and non-language words from Facebook's fastText (https://fasttext.cc/) vec-file.\
  The configuration file can be easily customized to work with any language. If this project helps you with your language, please submit a pull request or share your changes with us.
 
 <!-- TOC depthFrom:1 depthTo:2 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Prerequisite](#prerequisite)
 - [Installation](#installation)
+- [Language selection](#language-selection)
 - [Data and fastText](#data-and-fasttext)
 - [Running CLI](#running-cli)
   - [Database initialization](#database-initialization)
@@ -39,6 +40,21 @@ cd fasttext-decrapifier
 python3.6 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+```
+
+&nbsp;
+# Language selection
+Copy one of the predefined config files.\
+If your language is missing, create your own language specific config file.
+
+For Finnish:
+```
+cp config-fi.json config.json`
+```
+
+Or Japanese:
+```
+cp config-ja.json config.json`
 ```
 
 &nbsp;
