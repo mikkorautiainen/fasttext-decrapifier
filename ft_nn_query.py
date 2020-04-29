@@ -22,7 +22,6 @@
 import sys
 import datetime
 import random
-import fasttext 
 
 from ft_dbconnect import MysqlDB
 import ft_forward_model

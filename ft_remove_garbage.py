@@ -19,10 +19,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import subprocess
-import sys
-import re
 import os
+import re
+import sys
 
 from ft_dbconnect import MysqlDB
 from ft_spell_checker import SpellChecker
