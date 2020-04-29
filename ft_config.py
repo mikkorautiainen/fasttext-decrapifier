@@ -20,8 +20,8 @@
 # THE SOFTWARE.
 
 import json
+import pathlib
 import sys
-from pathlib import Path
 
 
 # check python version >= 3.6
@@ -33,13 +33,13 @@ DEFAULT_CONFIG_FILE_PATH = './config.json'
 
 def load_config(filepath=DEFAULT_CONFIG_FILE_PATH):
     config = {}
-    config_file = Path(filepath)
+    config_file = pathlib.Path(filepath)
     if config_file.exists():
         with open(filepath) as f:
             config = json.load(f)
     if not config:
         print(f'\nError: Failed to read config file "{filepath}"\n')
-        print('You need to copy one of the predefined config files ' \
+        print('You need to copy one of the predefined config files '
               'and modify ')
         print('the database connection parameters to suit your system.\n')
         print("For Finnish  run `cp config-fi.json config.json`")
