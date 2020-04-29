@@ -19,7 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import mysql.connector
+from mysql import connector
 import re
 
 
@@ -33,21 +33,21 @@ class MysqlDB:
             if self.database is None:
                 self.database = config['DATABASE']
                 self.db = None
-            
-            self.db = mysql.connector.connect(user=self.database['user'],
-                                              password=self.database['password'],
-                                              host=self.database['host'],
-                                              port=self.database['port'],
-                                              database=self.database['dbname'],
-                                              use_pure=True)
+
+            self.db = connector.connect(user=self.database['user'],
+                                        password=self.database['password'],
+                                        host=self.database['host'],
+                                        port=self.database['port'],
+                                        database=self.database['dbname'],
+                                        use_pure=True)
             MysqlDB.db = self.db
-        except:
+        except connector.Error:
             print(f'Failed to connect to database {self.database["dbname"]}')
-            self.db = mysql.connector.connect(user=self.database['user'],
-                                              password=self.database['password'],
-                                              host=self.database['host'],
-                                              port=self.database['port'],
-                                              use_pure=True)
+            self.db = connector.connect(user=self.database['user'],
+                                        password=self.database['password'],
+                                        host=self.database['host'],
+                                        port=self.database['port'],
+                                        use_pure=True)
             MysqlDB.db = self.db
 
     def execute(self, sql, values):
@@ -56,7 +56,7 @@ class MysqlDB:
             self.cursor = self.db.cursor(dictionary=True, buffered=True)
             self.cursor.execute(sql, values)
             return self.cursor
-        except mysql.connector.Error as err:
+        except connector.Error as err:
             print(f'Error: Something went wrong: {err} on {sql}')
         return None
 
