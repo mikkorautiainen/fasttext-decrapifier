@@ -1,6 +1,7 @@
 *.bin
 *.vec
 *.vocab
+/config.json
 /fasttext
 /venv/*
 /__pycache__
